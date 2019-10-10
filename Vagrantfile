@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
     grafana.vm.network "private_network", ip: "192.168.0.32"
     grafana.vm.provider "virtualbox" do |vb|
       vb.name = "grafana"
-      vb.memory = 1024
+      vb.memory = 512
       vb.cpus = 1
     end
 	config.vm.provision "shell", path: "grafana_provision.sh"
@@ -52,6 +52,18 @@ Vagrant.configure(2) do |config|
 	ansible.vm.provision :shell, path: "bootstrap.sh"
   end
   
+	config.vm.define "kubernetes" do |kubernetes|
+    kubernetes.vm.box = "centos/7"
+    kubernetes.vm.hostname = "kubernetes.billa.com"
+    kubernetes.vm.network "private_network", ip: "192.168.0.38"
+    kubernetes.vm.provider "virtualbox" do |vb|
+      vb.name = "kubernetes"
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+	kubernetes.vm.provision :shell, path: "bootstrap.sh"
+  end
+  
     config.vm.define "jenkins" do |jenkins|
     jenkins.vm.box = "centos/7"
     jenkins.vm.hostname = "jenkins.billa.com"
@@ -64,16 +76,16 @@ Vagrant.configure(2) do |config|
 	jenkins.vm.provision :shell, path: "bootstrap.sh"
   end 
   
-    config.vm.define "otrs" do |otrs|
-    otrs.vm.box = "centos/7"
-    otrs.vm.hostname = "otrs.billa.com"
-    otrs.vm.network "private_network", ip: "192.168.0.30"
-    otrs.vm.provider "virtualbox" do |vb|
-      vb.name = "otrs"
-      vb.memory = 512
+    config.vm.define "python" do |python|
+    python.vm.box = "centos/7"
+    python.vm.hostname = "python.billa.com"
+    python.vm.network "private_network", ip: "192.168.0.30"
+    python.vm.provider "virtualbox" do |vb|
+      vb.name = "python"
+      vb.memory = 1024
       vb.cpus = 1
     end
-	otrs.vm.provision :shell, path: "bootstrap.sh"
+	python.vm.provision :shell, path: "bootstrap.sh"
   end 
   
     config.vm.define "mysqlphp" do |mysqlphp|
@@ -120,6 +132,21 @@ Vagrant.configure(2) do |config|
       vb.cpus = 1
     end  
   end
+  
+  
+    config.vm.define "myJenkins" do |myJenkins|
+    myJenkins.vm.box = "centos/7"
+    myJenkins.vm.hostname = "myJenkins.billa.com"
+    myJenkins.vm.network "private_network", ip: "192.168.0.37"
+    myJenkins.vm.provider "virtualbox" do |vb|
+	config.disksize.size = '60GB'
+      vb.name = "myJenkins"
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+	myJenkins.vm.provision :shell, path: "bootstrap.sh"
+	config.vm.provision "shell", path: "disk-extend.sh"
+  end
 	
 	
     config.vm.define "ubuntu" do |ubuntu|
@@ -140,10 +167,12 @@ puts "app1        : # 192.168.0.26"
 puts "ansible     : # 192.168.0.27"
 puts "jenkins     : # 192.168.0.28"
 puts "ubuntu 	    : # 192.168.0.29"
-puts "otrs        : #192.168.0.30"
+puts "python      : # 192.168.0.30"
 puts "mysqlphp    : # 192.168.0.31"
 puts "grafana     : # 192.168.0.32"
 puts "app2        : # 192.168.0.33"
 puts "app3        : # 192.168.0.34"
 puts "ansClient   : # 192.168.0.35"
+puts "myJenkins : # 192.168.0.37"
+puts "kubernetes  : # 192.168.0.38"
 puts "-------------------------------------------------"
